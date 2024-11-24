@@ -2,20 +2,109 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer base {
+  :root {
+    /* Base colors converted from your palette:
+       #8ECAE6 -> hsl(199, 64%, 73%)  - Light blue
+       #219EBC -> hsl(197, 71%, 44%)  - Medium blue
+       #023047 -> hsl(201, 91%, 14%)  - Dark blue
+       #FFB703 -> hsl(43, 100%, 51%)  - Yellow
+       #FB8500 -> hsl(31, 100%, 49%)  - Orange
+    */
+    
+    /* Main colors */
+    --background: 199 64% 98%;
+    --foreground: 201 91% 14%;
+    
+    /* Card styles */
+    --card: 199 64% 100%;
+    --card-foreground: 201 91% 14%;
+    
+    /* Popover styles */
+    --popover: 199 64% 100%;
+    --popover-foreground: 201 91% 14%;
+    
+    /* Primary - Using the medium blue as primary */
+    --primary: 197 71% 44%;
+    --primary-foreground: 199 64% 98%;
+    
+    /* Secondary - Using a softer version of the light blue */
+    --secondary: 199 64% 73%;
+    --secondary-foreground: 201 91% 14%;
+    
+    /* Muted - Desaturated version of the light blue */
+    --muted: 199 30% 80%;
+    --muted-foreground: 201 40% 40%;
+    
+    /* Accent - Using the yellow */
+    --accent: 43 100% 51%;
+    --accent-foreground: 201 91% 14%;
+    
+    /* Destructive */
+    --destructive: 31 100% 49%;
+    --destructive-foreground: 199 64% 98%;
+    
+    /* Borders and inputs */
+    --border: 199 30% 90%;
+    --input: 199 30% 90%;
+    --ring: 197 71% 44%;
+    
+    /* Border radius */
+    --radius: 0.5rem;
+    
+    /* Chart colors */
+    --chart-1: 199 64% 73%;
+    --chart-2: 197 71% 44%;
+    --chart-3: 201 91% 14%;
+    --chart-4: 43 100% 51%;
+    --chart-5: 31 100% 49%;
+  }
+ 
+  .dark {
+    /* Dark mode - inverting the color relationships */
+    --background: 201 91% 14%;
+    --foreground: 199 64% 98%;
+    
+    --card: 201 80% 16%;
+    --card-foreground: 199 64% 98%;
+    
+    --popover: 201 80% 16%;
+    --popover-foreground: 199 64% 98%;
+    
+    /* Primary - Brightened medium blue */
+    --primary: 197 71% 54%;
+    --primary-foreground: 199 64% 98%;
+    
+    /* Secondary - Darkened light blue */
+    --secondary: 199 64% 30%;
+    --secondary-foreground: 199 64% 98%;
+    
+    /* Muted - Darker version */
+    --muted: 201 40% 20%;
+    --muted-foreground: 199 30% 70%;
+    
+    /* Accent - Slightly darkened yellow */
+    --accent: 43 90% 45%;
+    --accent-foreground: 199 64% 98%;
+    
+    /* Destructive - Darkened orange */
+    --destructive: 31 90% 45%;
+    --destructive-foreground: 199 64% 98%;
+    
+    /* Borders and inputs */
+    --border: 201 40% 20%;
+    --input: 201 40% 20%;
+    --ring: 197 71% 54%;
+    
+    /* Chart colors - Adjusted for dark mode */
+    --chart-1: 199 64% 83%;
+    --chart-2: 197 71% 64%;
+    --chart-3: 201 91% 84%;
+    --chart-4: 43 100% 61%;
+    --chart-5: 31 100% 59%;
+  }
 }
