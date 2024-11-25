@@ -28,7 +28,7 @@ const FeaturedSection = () => {
       name: "Classic White Sneakers",
       price: 89.99,
       rating: 4.5,
-      image: "/api/placeholder/400/500",
+      image: "/assets/products/placeholder.png",
       badge: "New Arrival",
     },
     {
@@ -36,7 +36,7 @@ const FeaturedSection = () => {
       name: "Leather Crossbody Bag",
       price: 129.99,
       rating: 4.8,
-      image: "/api/placeholder/400/500",
+      image: "/assets/products/placeholder.png",
       badge: "Best Seller",
     },
     {
@@ -44,14 +44,14 @@ const FeaturedSection = () => {
       name: "Slim Fit Denim Jeans",
       price: 79.99,
       rating: 4.6,
-      image: "/api/placeholder/400/500",
+      image: "/assets/products/placeholder.png",
     },
     {
       id: 4,
       name: "Cotton Blend T-Shirt",
       price: 29.99,
       rating: 4.7,
-      image: "/api/placeholder/400/500",
+      image: "/assets/products/placeholder.png",
       badge: "Sale",
     },
   ];

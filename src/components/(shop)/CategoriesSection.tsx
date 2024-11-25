@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/button";
 
 const CategoriesSection = () => {
   const categories = [
-    { name: "Women", image: "/api/placeholder/600/800", link: "/women" },
-    { name: "Men", image: "/api/placeholder/600/800", link: "/men" },
+    { name: "Women", image: "/assets/women-6x8.jpg", link: "/women" },
+    { name: "Men", image: "/assets/mens-6x8.jpg", link: "/men" },
     {
       name: "Accessories",
-      image: "/api/placeholder/600/800",
+      image: "/assets/accessories-6x8.jpg",
       link: "/accessories",
     },
-    { name: "Beauty", image: "/api/placeholder/600/800", link: "/beauty" },
+    { name: "Beauty", image: "/assets/beauty-6x8.jpg", link: "/beauty" },
   ];
   return (
     <section className="py-24">
