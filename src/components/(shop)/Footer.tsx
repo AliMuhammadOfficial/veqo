@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
+import {Link} from '@/i18n/routing';
 import { Facebook, Twitter, Instagram, Youtube, Mail } from "lucide-react";
 
 import { CardTitle } from "@/components/ui/card";

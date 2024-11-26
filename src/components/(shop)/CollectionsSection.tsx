@@ -10,13 +10,13 @@ const CollectionsSection = () => {
     {
       name: "Summer Collection",
       description: "Light & breezy styles for warm days",
-      image: "/api/placeholder/800/400",
+      image: "/assets/collection1.jpeg",
       badge: "New Season",
     },
     {
       name: "Autumn Essentials",
       description: "Cozy pieces for the changing season",
-      image: "/api/placeholder/800/400",
+      image: "/assets/collection1.jpeg",
       badge: "Coming Soon",
     },
   ];

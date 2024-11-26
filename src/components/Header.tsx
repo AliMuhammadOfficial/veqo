@@ -2,7 +2,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
+
 import { Search, ShoppingBag, Menu, User, Heart, X, Globe } from "lucide-react";
 import {
   Sheet,
