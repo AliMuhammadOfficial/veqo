@@ -20,10 +20,13 @@ export const createProductSchema = z.object({
     z.string().optional()
   ),
   description: z.string().optional(),
-  documentType: z.string({
-    message: "Please select a document type",
+  price: z.string({
+    message: "Please enter price.",
   }),
-  uploadAs: z.string().optional(),
+  currency: z.string({
+    message: "Please select currency.",
+  }),
+  stock: z.string().optional(),
   type: z.string({
     message: "Please select type",
   })

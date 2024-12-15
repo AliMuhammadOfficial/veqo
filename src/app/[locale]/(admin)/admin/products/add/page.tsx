@@ -8,11 +8,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createProductSchema } from "@/utils/zod-schemas/createProduct";
 import { Form } from "@/components/ui/form";
 import ProductInfo from "./ProductInfo";
+import PricingAndStock from "./PricingAndStock";
 
 const CreateProduct = () => {
   const form = useForm<z.infer<typeof createProductSchema>>({
     resolver: zodResolver(createProductSchema),
-    defaultValues: {},
+    defaultValues: {
+      currency: "USD",
+      price: "0",
+      stock: "1"
+    },
   });
 
   const onSubmit = (values: z.infer<typeof createProductSchema>) => {
@@ -33,6 +38,7 @@ const CreateProduct = () => {
         >
           <ImagesBox form={form} />
           <ProductInfo form={form} />
+          <PricingAndStock form={form} />
         </form>
       </Form>
     </div>

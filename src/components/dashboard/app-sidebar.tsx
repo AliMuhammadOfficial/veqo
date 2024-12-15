@@ -70,6 +70,10 @@ const data = {
           url: "/admin/products/categories",
         },
         {
+          title: "Attributes",
+          url: "/admin/products/attributes",
+        },
+        {
           title: "Inventory",
           url: "/admin/products/inventory",
         },

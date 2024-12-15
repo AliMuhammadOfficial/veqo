@@ -2,7 +2,7 @@ import { Upload, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 interface ImageBoxProps {
-  form: any; // Ensure proper typing for the form
+  form: any;
 }
 
 const ImagesBox = (props: ImageBoxProps) => {
@@ -15,13 +15,9 @@ const ImagesBox = (props: ImageBoxProps) => {
       const existingImages = form.getValues("images") || [];
       const newImages = Array.from(files);
 
-      // Append the new images to the existing ones
       const updatedImages = [...existingImages, ...newImages];
-
-      // Update form state with the combined images
       form.setValue("images", updatedImages);
 
-      // Create preview URLs for selected images
       const newPreviewUrls = [
         ...previewUrls,
         ...newImages.map((file) => URL.createObjectURL(file)),
@@ -54,9 +50,9 @@ const ImagesBox = (props: ImageBoxProps) => {
   }, [form.getValues("images")]);
 
   return (
-    <div className="w-full h-auto py-5 bg-white rounded-xl shadow-sm">
+    <div className="w-full h-auto py-5 bg-white rounded-xl shadow-md">
       <div className="top border-b border-gray-300 px-5 pb-4">
-        <p className="text-black">Add Product Photos</p>
+      <p className="text-black text-xl font-bold">Product Information</p>
       </div>
       <div className="py-6 px-5">
         {previewUrls?.length > 0 ? (

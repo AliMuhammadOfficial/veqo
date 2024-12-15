@@ -190,10 +190,10 @@ export default function AllProducts() {
                 <TableRow>
                   <TableHead>Product ID</TableHead>
                   <TableHead>Product</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Total</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Total Stock</TableHead>
                   <TableHead>Price</TableHead>
+                  <TableHead>Date</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -205,15 +205,16 @@ export default function AllProducts() {
                       <ProductWrapper />
                     </TableCell>
                     <TableCell className="capitalize">
-                      <Badge className={getStatusColor(product?.status)}>
+                      {/* <Badge className={getStatusColor(product?.category)}>
                         {product?.status}
-                      </Badge>
+                      </Badge> */}
+                      {product?.category}
                     </TableCell>
                     <TableCell>
-                      {new Date(product?.date).toLocaleDateString()}
+                    {product?.total}
                     </TableCell>
-                    <TableCell>{product?.total}</TableCell>
                     <TableCell>${product?.price?.toFixed(2)}</TableCell>
+                    <TableCell>{new Date(product?.date).toLocaleDateString()}</TableCell>
                     <TableCell>
                       <Dialog>
                         <DropdownMenu>
@@ -225,21 +226,18 @@ export default function AllProducts() {
                           <DropdownMenuContent align="end">
                             <DialogTrigger asChild>
                               <DropdownMenuItem
-                                onSelect={() => setSelectedOrder(product)}
+                                onClick={() => router.push(`/en/admin/products/details/${product?.id}`)}
                               >
                                 View Details
                               </DropdownMenuItem>
                             </DialogTrigger>
-                            <DropdownMenuItem>Edit Order</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => router.push("/en/admin/products/add")}>Edit</DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem className="text-red-600">
-                              Cancel Order
+                              Delete
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
-                        {selectedOrder && (
-                          <ProductAddDialog product={selectedOrder} />
-                        )}
                       </Dialog>
                     </TableCell>
                   </TableRow>
