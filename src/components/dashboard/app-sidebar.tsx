@@ -63,7 +63,7 @@ const data = {
       items: [
         {
           title: "All Products",
-          url: "/admin/products/all-products",
+          url: "/admin/products/all",
         },
         {
           title: "Categories",

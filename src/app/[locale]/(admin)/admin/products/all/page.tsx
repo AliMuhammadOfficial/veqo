@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -19,9 +19,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { MoreVertical, Plus } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import ProductAddDialog from "@/components/dashboard/products/ProductAddDialog";
 import CustomSearch from "@/components/dashboard/common/CustomSearch";
@@ -75,7 +74,7 @@ const dropdownOptions = [
   { label: "Sold", value: "Sold" },
 ];
 
-export const getStatusColor = (status: string) => {
+const getStatusColor = (status: string) => {
   const colors = {
     pending: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
     processing: "bg-blue-100 text-blue-800 hover:bg-blue-200",
@@ -91,18 +90,33 @@ export default function AllProducts() {
     useState<Products[]>(MOCK_PRODUCTS);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Products | null>(null);
-  const { toast } = useToast();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isLoading, setIsLoading] = useState(false);
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    const filtered = MOCK_PRODUCTS.filter((product) => {
+      const matchesSearch =
+        product.product.toLowerCase().includes(query.toLowerCase()) ||
+        product.id.toLowerCase().includes(query.toLowerCase());
+      const matchesStatus = !statusFilter || product.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+    setFilteredProducts(filtered);
+  };
 
-  //   const filteredOrders = products?.filter((product) => {
-  //     const matchesSearch =
-  //       order.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //       order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //       order.email.toLowerCase().includes(searchQuery.toLowerCase());
-  //     const matchesStatus = !statusFilter || order.status === statusFilter;
-  //     return matchesSearch && matchesStatus;
-  //   });
+  const handleStatusFilter = (status: string) => {
+    setStatusFilter(status);
+    const filtered = MOCK_PRODUCTS.filter((product) => {
+      const matchesSearch =
+        product.product.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.id.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesStatus = !status || product.status === status;
+      return matchesSearch && matchesStatus;
+    });
+    setFilteredProducts(filtered);
+  };
 
   //   const handleStatusChange = async (
   //     orderId: string,
@@ -139,15 +153,12 @@ export default function AllProducts() {
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Products</h1>
           <p className="text-muted-foreground">Manage your products</p>
         </div>
         <div className="flex gap-2">
-          <Button
-            onClick={() => router.push("/en/admin/products/create-product")}
-          >
+          <Button onClick={() => router.push("/en/admin/products/add")}>
             <Plus className="h-4 w-4 mr-2" />
-            Create Product
+            Add Product
           </Button>
         </div>
       </div>
@@ -156,21 +167,21 @@ export default function AllProducts() {
         <CardContent className="pt-6">
           <div className="flex gap-4 mb-6">
             <CustomSearch
-              handleSearch={(e) => setSearchQuery(e.target.value)}
+              handleSearch={handleSearch}
               search={searchQuery}
               placeholder="Search products..."
             />
             <CustomDropdown
               options={dropdownOptions}
-              onChange={(selected: string) => setStatusFilter(selected)}
+              onChange={handleStatusFilter}
               selected="pending"
             />
           </div>
 
           {isLoading ? (
             <div className="space-y-4">
-              {[1, 2, 3].map((n) => (
-                <Skeleton key={n} className="h-16 w-full" />
+              {[...Array(3)].map((_, index) => (
+                <Skeleton key={index} className="h-16 w-full" />
               ))}
             </div>
           ) : (
