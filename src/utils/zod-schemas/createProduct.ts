@@ -26,7 +26,18 @@ export const createProductSchema = z.object({
   currency: z.string({
     message: "Please select currency.",
   }),
-  stock: z.string().optional(),
+  // New inventory tracking fields
+  inventoryDetails: z.array(
+    z.object({
+      size: z.string(),
+      color: z.string(),
+      quantity: z.number().min(0, { message: "Quantity must be non-negative" }),
+      warehouse: z.string()
+    })
+  ).optional(),
+
+  // Computed total stock
+  stock: z.string().refine(val => !isNaN(parseInt(val)), { message: "Stock must be a number" }),
   type: z.string({
     message: "Please select type",
   })

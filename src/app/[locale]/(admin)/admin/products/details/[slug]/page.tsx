@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Image from "next/image"
-import { MinusIcon, PlusIcon, Star, StarHalf } from 'lucide-react'
+import { AlertTriangleIcon, MinusIcon, PackageIcon, PlusIcon, Star, StarHalf, XCircleIcon } from 'lucide-react'
 
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
@@ -11,10 +11,61 @@ import { Card, CardContent } from "@/components/ui/card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import DetailsReview from "./DetailsReview"
 
+interface InventoryItem {
+  size: string;
+  color: string;
+  stockQuantity: number;
+  warehouseLocations?: string[];
+}
+
+const inventoryData: InventoryItem[] = [
+  { 
+    size: "S", 
+    color: "dark", 
+    stockQuantity: 25,
+    warehouseLocations: ["Warehouse A", "Warehouse B"]
+  },
+  { 
+    size: "M", 
+    color: "dark", 
+    stockQuantity: 50,
+    warehouseLocations: ["Warehouse A", "Warehouse C"]
+  },
+  { 
+    size: "XL", 
+    color: "dark", 
+    stockQuantity: 15,
+    warehouseLocations: ["Warehouse B"]
+  },
+  { 
+    size: "XXL", 
+    color: "dark", 
+    stockQuantity: 10,
+    warehouseLocations: ["Warehouse C"]
+  }
+]
+
 export default function ProductDetails() {
   const [quantity, setQuantity] = React.useState(1)
   const [selectedColor, setSelectedColor] = React.useState("dark")
   const [selectedSize, setSelectedSize] = React.useState("M")
+
+  const getCurrentStock = () => {
+    const currentStock = inventoryData.find(
+      item => item.size === selectedSize && item.color === selectedColor
+    )
+    return currentStock ? currentStock.stockQuantity : 0
+  }
+
+  const getWarehouseLocations = () => {
+    const currentStock = inventoryData.find(
+      item => item.size === selectedSize && item.color === selectedColor
+    )
+    return currentStock ? currentStock.warehouseLocations : []
+  }
+
+  const currentStock = getCurrentStock()
+  const warehouseLocations = getWarehouseLocations()
 
   return (
     <div className="container mx-auto px-4 py-6">
@@ -178,6 +229,38 @@ export default function ProductDetails() {
               </svg>
               <span>In Stock</span>
             </div>
+
+{/* New inventory details */}
+<div className="flex items-center gap-2 text-primary">
+            <PackageIcon className="w-4 h-4" />
+            <span>Stock Quantity: {currentStock} units</span>
+          </div>
+
+          {warehouseLocations && warehouseLocations?.length > 0 && (
+            <div className="text-sm text-muted-foreground">
+              Available in:
+              <ul className="ml-4 list-disc">
+                {warehouseLocations?.map((location, index) => (
+                  <li key={index}>{location}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {currentStock < 20 && currentStock > 0 && (
+            <div className="text-yellow-600 flex items-center gap-2">
+              <AlertTriangleIcon className="w-4 h-4" />
+              <span>Low stock - order soon!</span>
+            </div>
+          )}
+
+          {currentStock === 0 && (
+            <div className="text-red-600 flex items-center gap-2">
+              <XCircleIcon className="w-4 h-4" />
+              <span>Out of stock for this size and color</span>
+            </div>
+          )}
+
             <div className="flex items-center gap-2 text-green-600">
               <svg
                 className="w-4 h-4"

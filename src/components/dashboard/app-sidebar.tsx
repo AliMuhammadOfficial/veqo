@@ -77,10 +77,10 @@ const data = {
           title: "Inventory",
           url: "/admin/products/inventory",
         },
-        {
-          title: "Collections",
-          url: "/admin/products/collections",
-        },
+        // {
+        //   title: "Collections",
+        //   url: "/admin/products/collections",
+        // },
       ],
     },
     {
