@@ -1,44 +1,61 @@
 import { z } from "zod";
 
-// RESIDENCE SCHEMA
 export const createProductSchema = z.object({
-  name: z.string({
-    message: "Name is required.",
-  }),
-  category: z.string({
-    message: "Category is required.",
-  }),
-  images: z.array(
-    z.object({
-      file: z.instanceof(File)
-    })
-  ).min(1, 'At least one image is required.'),
-  sizes: z.array(
-    z.string().optional()
-  ),
-  colors: z.array(
-    z.string().optional()
-  ),
+  name: z.string().min(1, "Name is required"),
+  slug: z.string().min(1, "Slug is required"),
+  permalink: z.string().optional(),
+  type: z.enum(["simple", "grouped", "external", "variable"]),
+  status: z.enum(["draft", "pending", "private", "publish"]),
+  featured: z.boolean(),
+  catalogVisibility: z.enum(["visible", "catalog", "search", "hidden"]),
   description: z.string().optional(),
-  price: z.string({
-    message: "Please enter price.",
-  }),
-  currency: z.string({
-    message: "Please select currency.",
-  }),
-  // New inventory tracking fields
-  inventoryDetails: z.array(
-    z.object({
-      size: z.string(),
-      color: z.string(),
-      quantity: z.number().min(0, { message: "Quantity must be non-negative" }),
-      warehouse: z.string()
+  shortDescription: z.string().optional(),
+  sku: z.string().min(1, "SKU is required"),
+  price: z.string().default("0.00"),
+  regularPrice: z.string(),
+  salePrice: z.string().default(""),
+  dateOnSaleFrom: z.date().optional(),
+  dateOnSaleTo: z.date().optional(),
+  onSale: z.boolean().optional(),
+  purchasable: z.boolean().optional(),
+  totalSales: z.number().optional(),
+  virtual: z.boolean().optional(),
+  downloadable: z.boolean(),
+  downloads: z.any().optional(),
+  downloadLimit: z.number(),
+  downloadExpiry: z.number(),
+  externalUrl: z.string().optional(),
+  buttonText: z.string().optional(),
+  taxStatus: z.enum(["taxable", "shipping", "none"]),
+  taxClass: z.string().optional(),
+  manageStock: z.boolean(),
+  stockQuantity: z.number().optional(),
+  stockStatus: z.enum(["instock", "outofstock", "onbackorder"]),
+  backorders: z.enum(["no", "notify", "yes"]),
+  backordersAllowed: z.boolean().optional(),
+  backordered: z.boolean().optional(),
+  soldIndividually: z.boolean(),
+  weight: z.string().optional(),
+  dimensions: z
+    .object({
+      length: z.string(),
+      width: z.string(),
+      height: z.string(),
     })
-  ).optional(),
-
-  // Computed total stock
-  stock: z.string().refine(val => !isNaN(parseInt(val)), { message: "Stock must be a number" }),
-  type: z.string({
-    message: "Please select type",
-  })
-})
+    .optional(),
+  shippingRequired: z.boolean(),
+  shippingTaxable: z.boolean().optional(),
+  shippingClass: z.string().optional(),
+  shippingClassId: z.number().optional(),
+  reviewsAllowed: z.boolean(),
+  averageRating: z.string(),
+  ratingCount: z.number(),
+  categoryIDs: z.array(z.string()),
+  tagIDs: z.array(z.string()),
+  images: z.array(z.any()),
+  attributes: z.array(z.any()),
+  defaultAttributes: z.array(z.any()),
+  variations: z.array(z.any()),
+  groupedProducts: z.array(z.number()),
+  metaData: z.array(z.any()),
+});

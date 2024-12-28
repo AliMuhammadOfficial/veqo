@@ -1,0 +1,339 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @map("user_id") @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id") @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("sessions")
+}
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  roleId        String    @db.ObjectId
+
+  role Role @relation(fields: [roleId], references: [id])
+
+  billingAddressIds String[]         @db.ObjectId
+  billingAddress    BillingAddress[] @relation(fields: [billingAddressIds], references: [id])
+
+  shippingAddressIds String[]          @db.ObjectId
+  shippingAddressId  ShippingAddress[] @relation(fields: [shippingAddressIds], references: [id])
+
+  Authenticator Authenticator[]
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("users")
+}
+
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@unique([identifier, token])
+  @@map("verificationtokens")
+}
+
+model Authenticator {
+  id                   String  @id @default(auto()) @map("_id") @db.ObjectId
+  credentialID         String  @unique
+  userId               String  @db.ObjectId
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("authenticators")
+}
+
+model Role {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  User      User[]
+
+  @@map("roles")
+}
+
+model BillingAddress {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  street     String
+  city       String
+  state      String
+  postalCode String
+  country    String
+  createdAt  DateTime @default(now()) @map(name: "created_at")
+  updatedAt  DateTime @updatedAt @map(name: "updated_at")
+
+  userIDs String[] @db.ObjectId
+  users   User[]   @relation(fields: [userIDs], references: [id])
+
+  @@map("billing_addresses")
+}
+
+model ShippingAddress {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  street     String
+  city       String
+  state      String
+  postalCode String
+  country    String
+  createdAt  DateTime @default(now()) @map(name: "created_at")
+  updatedAt  DateTime @updatedAt @map(name: "updated_at")
+  userIDs    String[] @db.ObjectId
+  users      User[]   @relation(fields: [userIDs], references: [id])
+
+  @@map("shipping_addresses")
+}
+
+model Product {
+  id                String            @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
+  slug              String            @unique
+  permalink         String?           @unique
+  type              ProductType       @default(simple)
+  status            Status            @default(publish)
+  featured          Boolean
+  catalogVisibility CatalogVisibility @default(visible) @map("catalog_visibility")
+  description       String?
+  shortDescription  String?           @map("short_description")
+  sku               String            @unique
+  price             String            @default("0.00")
+  regularPrice      String            @map("regular_price")
+  salePrice         String            @map("sale_price")
+  dateOnSaleFrom    DateTime?         @map("date_on_sale_from")
+  dateOnSaleTo      DateTime?         @map("date_on_sale_to")
+  onSale            Boolean?          @map("on_sale")
+  purchasable       Boolean?
+  totalSales        Int?              @map("total_sales")
+  virtual           Boolean?
+  downloadable      Boolean           @default(false)
+  downloads         Json?
+  downloadLimit     Int               @default(-1) @map("download_limit")
+  downloadExpiry    Int               @default(-1) @map("download_expiry")
+  externalUrl       String?           @map("external_url")
+  buttonText        String?           @map("button_text")
+  taxStatus         TaxStatus         @default(taxable) @map("tax_status")
+  taxClass          String?           @map("tax_class")
+  manageStock       Boolean           @default(false) @map("manage_stock")
+  stockQuantity     Int?              @map("stock_quantity")
+  stockStatus       StockStatus       @default(instock) @map("stock_status")
+  backorders        BackOrderStatus   @default(no)
+  backordersAllowed Boolean?          @map("backorders_allowed")
+  backordered       Boolean?
+  soldIndividually  Boolean           @default(true) @map("sold_individually")
+  weight            String?
+  dimensions        Dimensions?
+  shippingRequired  Boolean           @default(true) @map("shipping_required")
+  shippingTaxable   Boolean?          @map("shipping_taxable")
+  shippingClass     String?           @map("shipping_class")
+  shippingClassId   Int?              @map("shipping_class_id")
+  reviewsAllowed    Boolean           @default(true) @map("reviews_allowed")
+  averageRating     String            @default("NA") @map("average_rating")
+  ratingCount       Int               @default(0) @map("rating_count")
+  relatedIds        Int[]             @default([])
+  upsellIds         Int[]             @default([])
+  crossSellIds      Int[]             @default([])
+  parentId          Int?              @map("parent_id")
+  purchaseNote      String?           @map("purchase_note")
+
+  categoryIDs String[]   @db.ObjectId
+  categories  Category[] @relation(fields: [categoryIDs], references: [id])
+
+  tagIDs            String[]           @db.ObjectId
+  tags              Tag[]              @relation(fields: [tagIDs], references: [id])
+  images            Image[]
+  attributes        Attribute[]
+  defaultAttributes DefaultAttribute[]
+  variations        Variation[]
+  groupedProducts   Int[]
+  metaData          Json[]
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("products")
+}
+
+model Category {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  slug       String    @unique
+  productIDs String[]  @db.ObjectId
+  products   Product[] @relation(fields: [productIDs], references: [id])
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("categories")
+}
+
+model Tag {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  slug       String    @unique
+  productIDs String[]  @db.ObjectId
+  products   Product[] @relation(fields: [productIDs], references: [id])
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("tags")
+}
+
+model Image {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  src       String
+  name      String
+  alt       String
+  productId String  @map("product_id") @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("images")
+}
+
+model Attribute {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  option    String
+  productId String  @map("product_id") @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id])
+
+  variationIDs String[]    @db.ObjectId
+  variations   Variation[] @relation(fields: [variationIDs], references: [id])
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("attributes")
+}
+
+model DefaultAttribute {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  option    String
+  productId String  @map("product_id") @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("default_attributes")
+}
+
+model Variation {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  productId    String      @map("product_id") @db.ObjectId
+  product      Product     @relation(fields: [productId], references: [id])
+  attributeIDs String[]    @db.ObjectId
+  attributes   Attribute[] @relation(fields: [attributeIDs], references: [id])
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("variations")
+}
+
+type Dimensions {
+  length String
+  width  String
+  height String
+}
+
+enum ProductType {
+  simple
+  grouped
+  external
+  variable
+}
+
+enum Status {
+  draft
+  pending
+  private
+  publish
+}
+
+enum CatalogVisibility {
+  visible
+  catalog
+  search
+  hidden
+}
+
+enum TaxStatus {
+  taxable
+  shipping
+  none
+}
+
+enum StockStatus {
+  instock
+  outofstock
+  onbackorder
+}
+
+enum BackOrderStatus {
+  no
+  notify
+  yes
+}
